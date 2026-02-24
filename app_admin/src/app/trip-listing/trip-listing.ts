@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { trips } from '../data/trips';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { TripCard } from "../trip-card/trip-card";
 import { TripData } from '../services/trip-data';
 import { Trip } from '../models/trip';
@@ -21,7 +20,8 @@ export class TripListing implements OnInit {
 
   constructor(
     private tripDataService: TripData,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     console.log('trip-listing constructor');
   }
@@ -35,12 +35,15 @@ export class TripListing implements OnInit {
     .subscribe({
       next: (value: any) => {
         this.trips = value;
+        console.log(value);
         if (value.length > 0) {
           this.message = 'There are ' + value.length + ' trips available.';
         } else {
           this.message = 'There were no trips retrieved from the database';
         }
         console.log(this.message);
+
+        this.cdr.detectChanges();
       },
       error: (error: any) => {
         console.log('Error: ' + error);
